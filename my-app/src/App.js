@@ -25,7 +25,7 @@ const Movie = function constructor(title, rating ){
   }
   this.anchorTag = function renderItem() {
     return (
-      <ul onClick={() => handleRatingClick()}> <a href="#">Title: {this.title}</a> </ul>
+      <ul><a href="#" onClick={() => handleRatingClick()}>Title: {this.title}</a> </ul>
     );
   }
 }
