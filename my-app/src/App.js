@@ -1,5 +1,7 @@
 import React from 'react';
 import './App.css';
+import Bank from './Bank';
+
 
 // Create a HTML page with a list element for movie titles.
 // Add a script at the bottom of the page body.
@@ -51,10 +53,13 @@ class App extends React.Component {
     this.state = {
       products: sampleProducts,
       product: {},
-      movies: movieTitles
+      movies: movieTitles,
+      bank: new Bank()
   };
     // This binding is necessary to make `this` work in the callback
     this.handleClick = this.handleClick.bind(this);
+    this.populateAccounts = this.populateAccounts.bind(this);
+
   }
 
   nextProduct() {  
@@ -76,6 +81,28 @@ class App extends React.Component {
     return this.state.product.description || "click to show product"
   }
 
+  populateAccounts() {
+    let { bank } = this.state;
+    bank.openAccount("Matt", 1000);
+    bank.openAccount("Jack", 2000);
+    bank.openAccount("Ben", 5000);
+    bank.openAccount("Jill", 8000);
+    this.setState({
+      bank: bank
+    })
+    // bank.printAllToConsole();
+  }
+
+  renderBankAccounts(){    
+    let accountNames = [];
+    if(this.state.bank.accounts.size > 0){
+       this.state.bank.accounts.forEach((_, idx) => accountNames.push(
+          <ul>Account name: {this.state.bank.getAccount(idx).name}, Balance: {this.state.bank.getAccount(idx).balance}</ul>
+       ));
+       return accountNames;
+    }
+  }
+
   render() {
     return(
       <>
@@ -87,6 +114,12 @@ class App extends React.Component {
       </button>
 
       {this.state.movies.map(x => x.anchorTag())}
+
+      <button onClick={this.populateAccounts}>
+        Add Bank Accounts
+      </button>
+
+       {this.renderBankAccounts()}
       </>
     );
 
