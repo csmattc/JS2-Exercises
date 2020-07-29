@@ -11,11 +11,11 @@ export default class Account {
     this.balance = balance;
   }
 
-  deposit() {
-
+  deposit(amount) {
+    this.balance = this.balance + amount;
   }
-  withdraw() {
-
+  withdraw(amount) {
+    this.balance = this.balance - amount;
   }
   toString() {
     return "name: " + this.name + " " + "balance: " + this.balance + " Identifier: " + this.uniqueNumber; 

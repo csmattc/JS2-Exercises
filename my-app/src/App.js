@@ -56,7 +56,8 @@ class App extends React.Component {
       movies: movieTitles,
       bank: new Bank(),
       accountName: "",
-      accountBalance: ""
+      accountBalance: "",
+      amount:""
   };
     // This binding is necessary to make `this` work in the callback
     this.handleClick = this.handleClick.bind(this);
@@ -107,6 +108,20 @@ class App extends React.Component {
         });
     }
 
+    const updateBalance = (e, account, stateAmount) => {
+      let { bank } = this.state;
+      if(e.target.id === "withdraw"){
+        console.log(account);
+        account.withdraw(Number(stateAmount));
+      } else {
+        account.deposit(Number(stateAmount));
+      }
+      this.setState({
+        amount: "",
+        bank: bank
+      });
+    }
+
     if(this.state.bank.accounts.size > 0){
        this.state.bank.accounts.forEach((_, idx) => accountNames.push(
           <ul>Account name: {this.state.bank.getAccount(idx).name}, Balance: {this.state.bank.getAccount(idx).balance}
@@ -115,6 +130,13 @@ class App extends React.Component {
             <a href="#" onClick={() => closeBankAccount(this.state.bank.getAccount(idx).identifier)}>
               Close account
             </a>
+            <br></br>
+            <input id={"account" + idx} name="amount" value={this.state["account" + idx]} placeholder={"amount"} onChange={(e) => this.setState({
+            ["account" + idx]: e.target.value
+              })}
+            ></input>
+            <button id="withdraw" onClick={(e) => updateBalance(e, bank.getAccount(this.state.bank.getAccount(idx).identifier), this.state["account" + idx])}>Withdraw</button>
+            <button id="deposit" onClick={(e) => updateBalance(e, bank.getAccount(this.state.bank.getAccount(idx).identifier), this.state["account" + idx])}>Deposit</button>
           </ul>
        ));
        return accountNames;
@@ -122,11 +144,11 @@ class App extends React.Component {
   }
 
   renderAddNewBankAccount(){
-    let { bank, accountName,accountBalance } = this.state;
+    let { bank, accountName, accountBalance } = this.state;
 
     const addNewBankAccount = (e) => {
       e.preventDefault();
-      bank.openAccount(accountName, accountBalance);
+      bank.openAccount(accountName, Number(accountBalance));
       this.setState({
         accountName: "",
         accountBalance: "",
