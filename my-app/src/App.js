@@ -54,7 +54,9 @@ class App extends React.Component {
       products: sampleProducts,
       product: {},
       movies: movieTitles,
-      bank: new Bank()
+      bank: new Bank(),
+      accountName: "",
+      accountBalance: ""
   };
     // This binding is necessary to make `this` work in the callback
     this.handleClick = this.handleClick.bind(this);
@@ -93,14 +95,63 @@ class App extends React.Component {
     // bank.printAllToConsole();
   }
 
+
   renderBankAccounts(){    
+    let { bank } = this.state;
     let accountNames = [];
+
+    const closeBankAccount = (uniqueNumber) => {
+        bank.closeAccount(uniqueNumber);
+        this.setState({
+          bank: bank
+        });
+    }
+
     if(this.state.bank.accounts.size > 0){
        this.state.bank.accounts.forEach((_, idx) => accountNames.push(
-          <ul>Account name: {this.state.bank.getAccount(idx).name}, Balance: {this.state.bank.getAccount(idx).balance}</ul>
+          <ul>Account name: {this.state.bank.getAccount(idx).name}, Balance: {this.state.bank.getAccount(idx).balance}
+            <br>
+            </br>
+            <a href="#" onClick={() => closeBankAccount(this.state.bank.getAccount(idx).identifier)}>
+              Close account
+            </a>
+          </ul>
        ));
        return accountNames;
     }
+  }
+
+  renderAddNewBankAccount(){
+    let { bank, accountName,accountBalance } = this.state;
+
+    const addNewBankAccount = (e) => {
+      e.preventDefault();
+      bank.openAccount(accountName, accountBalance);
+      this.setState({
+        accountName: "",
+        accountBalance: "",
+        bank: bank
+      });
+    }
+
+    return(
+      <form onSubmit={(e) => addNewBankAccount(e)}>
+        <input name="accountName" value={this.state.accountName} placeholder={"account name"} onChange={(e) => this.setState({
+            accountName: e.target.value
+          })}
+        >
+        </input>
+        <input name="accountBalance" value={this.state.accountBalance} placeholder={"account balance"} onChange={(e) => this.setState({
+            accountBalance: e.target.value
+          })}
+        >
+        </input>
+        <br>
+        </br>
+        <button>Create New Account</button>
+      </form>
+    );
+    
   }
 
   render() {
@@ -118,8 +169,12 @@ class App extends React.Component {
       <button onClick={this.populateAccounts}>
         Add Bank Accounts
       </button>
-
+      <br>
+       </br>
        {this.renderBankAccounts()}
+       <br>
+       </br>
+       {this.renderAddNewBankAccount()}
       </>
     );
 
